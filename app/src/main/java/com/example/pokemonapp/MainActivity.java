@@ -1,9 +1,12 @@
 package com.example.pokemonapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -11,9 +14,13 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.pokemonapp.activitys.CreatePokemonActivity;
+import com.example.pokemonapp.activitys.DetailPokemonActivity;
 import com.example.pokemonapp.adapters.PokemonAdapter;
 import com.example.pokemonapp.entities.Pokemon;
 import com.example.pokemonapp.services.PokemonService;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,8 +67,29 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("MAIN_APP", throwable.getMessage());
             }
         });
-        
+
         setUpRecyclerView();
+
+        FloatingActionButton btCreate =findViewById(R.id.btnCreateNewPokemon);
+        btCreate.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, CreatePokemonActivity.class);
+            startActivityForResult(intent, 100);
+        });
+
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(resultCode == 100 && requestCode == 100){
+            String pokemonJson=data.getStringExtra("POKEMON");
+            Pokemon poke=new Gson().fromJson(pokemonJson,Pokemon.class);
+
+            pokemons.add(poke);
+            adapter.notifyDataSetChanged();
+        }
     }
 
     private void setUpRecyclerView() {
@@ -70,5 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
         adapter = new PokemonAdapter(pokemons);
         rvpokemons.setAdapter(adapter);
+
+
     }
 }

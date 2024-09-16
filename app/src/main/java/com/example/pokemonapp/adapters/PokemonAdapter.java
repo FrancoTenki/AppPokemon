@@ -1,5 +1,6 @@
 package com.example.pokemonapp.adapters;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +10,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pokemonapp.R;
+import com.example.pokemonapp.activitys.DetailPokemonActivity;
 import com.example.pokemonapp.entities.Pokemon;
+import com.google.gson.Gson;
 
 import java.util.List;
 
@@ -39,6 +42,18 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.PokemonV
 
         tvName.setText(item.Nombre);
         tvNumber.setText(item.Tipo);
+
+        //----------------- Detalles
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent =new Intent(view.getContext(), DetailPokemonActivity.class);
+
+                intent.putExtra("POKEMON",new Gson().toJson(item));
+
+                view.getContext().startActivity(intent);
+            }
+        });
     }
 
     @Override
